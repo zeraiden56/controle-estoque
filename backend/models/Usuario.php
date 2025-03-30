@@ -1,4 +1,7 @@
 <?php
+
+require_once __DIR__ . '/../cors.php';
+
 class Usuario {
     private $conn;
     private $tabela = "usuarios";

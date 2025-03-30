@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../config/Database.php';
 require_once __DIR__ . '/../../models/Usuario.php';
 require_once __DIR__ . '/../../utils/JwtHelper.php';
-
+require_once __DIR__ . '/../cors.php';
 
 header('Content-Type: application/json');
 

@@ -1,25 +1,37 @@
 <?php
-require_once __DIR__ . '/../utils/DotEnv.php';
+namespace Config;
+
+require_once __DIR__ . '/../cors.php';
+require_once __DIR__ . '/../vendor/autoload.php'; // Isso importa o Dotenv
+
+use PDO;
+use Dotenv\Dotenv;
 
 class Database {
-    private $conn;
+    private static $instance = null;
+    private $pdo;
 
-    public function getConnection() {
-        (new DotEnv(__DIR__ . '/../.env'))->load();
+    private function __construct() {
+        // Carrega variáveis do .env
+        $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
+        $dotenv->load();
 
-        $host = getenv('DB_HOST');
-        $db   = getenv('DB_NAME');
-        $user = getenv('DB_USER');
-        $pass = getenv('DB_PASS');
+        $host = $_ENV['DB_HOST'] ?? 'localhost';
+        $port = $_ENV['DB_PORT'] ?? '5432';
+        $dbname = $_ENV['DB_NAME'] ?? 'controle_estoque';
+        $user = $_ENV['DB_USER'] ?? 'postgres';
+        $pass = $_ENV['DB_PASS'] ?? 'postgres';
 
-        try {
-            $this->conn = new PDO("pgsql:host=$host;dbname=$db", $user, $pass);
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
-            echo json_encode(['error' => 'Database connection failed: ' . $e->getMessage()]);
-            exit;
+        $dsn = "pgsql:host={$host};port={$port};dbname={$dbname};";
+        $this->pdo = new PDO($dsn, $user, $pass, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        ]);
+    }
+
+    public static function getInstance(): PDO {
+        if (!self::$instance) {
+            self::$instance = new Database();
         }
-
-        return $this->conn;
+        return self::$instance->pdo;
     }
 }

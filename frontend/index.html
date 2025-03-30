@@ -1,11 +1,11 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Goberri</title>
-
-  <!-- Favicon padrão -->
   <link id="favicon" rel="icon" type="image/svg+xml" href="/logo-preta.svg" />
-
   <script>
     const setFavicon = (isDark) => {
       const favicon = document.getElementById('favicon');
@@ -17,13 +17,18 @@
     };
 
     const matchDark = window.matchMedia('(prefers-color-scheme: dark)');
-
-    // Set inicial
     setFavicon(matchDark.matches);
-
-    // Escuta mudanças
     matchDark.addEventListener('change', e => {
       setFavicon(e.matches);
     });
   </script>
 </head>
+
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
+  <!-- Container onde o React será renderizado -->
+  <div id="root"></div>
+  <!-- Script de entrada da aplicação, gerado pelo Vite -->
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
+</html>

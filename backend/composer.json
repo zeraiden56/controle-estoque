@@ -1,0 +1,16 @@
+{
+    "name": "meusistema/controle-estoque",
+    "description": "API de controle de estoque",
+    "type": "project",
+    "require": {
+        "firebase/php-jwt": "^6.11",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ArthurCostaDias"
+        }
+    ],
+    "minimum-stability": "stable"
+}
