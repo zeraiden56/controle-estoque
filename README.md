@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="frontend/public/gobetti-markdown.gif" alt="Demonstração do sistema" width="600"/>
+</p>
+
 # 📦 Controle de Estoque
 
 Sistema simples de controle de estoque com backend em PHP (API REST), banco de dados PostgreSQL e frontend (em breve) em React.
@@ -25,7 +29,7 @@ Sistema simples de controle de estoque com backend em PHP (API REST), banco de d
 
 ⬜ Conectar com modelo LLM (ex: LLaMA ou OpenAI)  
 ⬜ Comandos de estoque via WhatsApp  
-⬜ IA interpretando e respondendo conversas
+⬜ IA interpretando e respondendo conversas  
 ⬜ IA interpretando e respondendo conversas por meio de audio também
 
 ---
