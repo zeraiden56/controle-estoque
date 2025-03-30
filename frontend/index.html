@@ -1,0 +1,29 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Goberri</title>
+
+  <!-- Favicon padrão -->
+  <link id="favicon" rel="icon" type="image/svg+xml" href="/logo-preta.svg" />
+
+  <script>
+    const setFavicon = (isDark) => {
+      const favicon = document.getElementById('favicon');
+      if (!favicon) return;
+      const href = isDark ? '/logo-branca.svg' : '/logo-preta.svg';
+      if (favicon.href !== location.origin + href) {
+        favicon.href = href;
+      }
+    };
+
+    const matchDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+    // Set inicial
+    setFavicon(matchDark.matches);
+
+    // Escuta mudanças
+    matchDark.addEventListener('change', e => {
+      setFavicon(e.matches);
+    });
+  </script>
+</head>

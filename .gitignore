@@ -1,0 +1,22 @@
+# PHP / Backend
+/vendor/
+.env
+*.log
+*.cache
+composer.lock
+
+# Node / Frontend (em breve)
+node_modules/
+dist/
+.env.local
+.env.production
+.env.development
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# IDEs e editores
+.vscode/
+.idea/
+*.swp
