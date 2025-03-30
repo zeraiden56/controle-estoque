@@ -1,10 +1,11 @@
+
 <p align="center">
-  <img src="frontend/public/gobetti-markdown.gif" alt="Demonstração do sistema" width="600"/>
+  <img src="frontend/public/goberri-markdown-header.gif" alt="Demonstração do sistema" width="300"/>
 </p>
 
 # 📦 Controle de Estoque
 
-Sistema simples de controle de estoque com backend em PHP (API REST), banco de dados PostgreSQL e frontend (em breve) em React.
+Sistema de controle de estoque com backend em PHP (API REST), banco de dados PostgreSQL, frontend em React e deploy com Docker + NGINX com proxy reverso. Agora com SSL habilitado!
 
 ---
 
@@ -13,24 +14,45 @@ Sistema simples de controle de estoque com backend em PHP (API REST), banco de d
 ### 📦 1. Backend (PHP + API REST)
 
 ✅ API REST com `index.php` centralizando tudo  
-✅ Autenticação com JWT  
+✅ Autenticação via JWT  
 ✅ Validação de dados  
-✅ Organização por módulos (`produtos`, `vendas`, `usuários`)
+✅ Organização modular (`produtos`, `vendas`, `usuarios`)  
+✅ Criação de usuários e login com JWT  
+⬜ Relacionamento entre vendas e produtos  
 
-### 🖥️ 2. Frontend (React + Vite + Tailwind v3)
+### 🔤 2. Frontend (React + Vite + Tailwind)
 
-⬜ Tela de login  
-⬜ Tela de dashboard (resumo)  
-⬜ Tela de produtos (CRUD)  
-⬜ Tela de vendas  
-⬜ Tela de lucros / relatórios
+✅ Tela de login conectada ao backend com JWT  
+✅ Dashboard inicial funcional  
+✅ CRUD de produtos  
+🟡 CRUD de vendas  
+⬜ Tela de relatórios/lucros  
 
-### 📲 3. Integração com WhatsApp + IA (futuro)
+### 🌐 3. Infraestrutura e Deploy
 
-⬜ Conectar com modelo LLM (ex: LLaMA ou OpenAI)  
+✅ Docker Compose com múltiplos serviços  
+✅ Proxy reverso com NGINX + Certbot  
+✅ SSL com Let's Encrypt para  
+⬜ Deploy automático via CI/CD (planejado)
+
+### 🤖 4. Integração com IA e WhatsApp (em breve)
+
 ⬜ Comandos de estoque via WhatsApp  
-⬜ IA interpretando e respondendo conversas  
-⬜ IA interpretando e respondendo conversas por meio de audio também
+⬜ Respostas inteligentes com LLM  
+⬜ Suporte a comandos por voz  
+
+---
+
+## 🧱 Tecnologias Utilizadas
+
+| **Camada**         | **Tecnologia**                          |
+| ------------------ | --------------------------------------- |
+| **Backend**        | 🐘 PHP 8.3 + API REST                    |
+| **Banco de Dados** | 🐘 PostgreSQL 15 + 🔐 pgcrypto            |
+| **Frontend**       | ⚛️ React + ⚡ Vite + 🎨 TailwindCSS        |
+| **Autenticação**   | 🔑 JWT (via Firebase) + 🔐 `crypt()`      |
+| **Infra**          | 🐳 Docker, 🌐 NGINX, 🔒 Certbot            |
+| **Hospedagem**     | 🖥️ VPS com domínio + SSL (Let's Encrypt) |
 
 ---
 
@@ -42,18 +64,24 @@ controle-estoque/
 │   ├── api/
 │   │   ├── auth/
 │   │   ├── produtos/
+│   │   ├── usuarios/
 │   │   └── vendas/
 │   ├── config/
 │   ├── models/
 │   ├── utils/
-│   ├── index.php
-│   └── .env
-├── frontend/            # (em breve)
-├── vendor/
-├── composer.json
-├── composer.lock
+│   ├── .env
+│   └── index.php
+├── certbot/                         # Desafios SSL Let's Encrypt
+│   ├── certbot/
+│   └── letsencrypt/
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   └── dist/                        # build de produção
+├── nginx/default.conf               # Proxy reverso + SSL
+├── docker-compose.yml
 ├── README.md
-└── deploy.sh
+└── .env.example
 ```
 
 ---
@@ -62,8 +90,11 @@ controle-estoque/
 
 - PHP 8.1+
 - PostgreSQL 14+
-- Composer
-- Extensão `pgcrypto` instalada no banco:
+- Docker + Docker Compose
+- VPS com domínio configurado
+- Certbot instalado
+
+Banco:
 
 ```sql
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
@@ -71,86 +102,86 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 ---
 
-## 🛠️ Setup Rápido
+## 🛠️ Instalação e Deploy
 
-### 1. Clone o projeto:
+### 1. Clone o repositório:
 
 ```bash
 git clone https://github.com/seu-usuario/controle-estoque.git
 cd controle-estoque
 ```
 
-### 2. Instale as dependências:
-
-```bash
-cd backend
-composer install
-```
-
-### 3. Configure o banco de dados no arquivo `.env`:
+### 2. Configure variáveis de ambiente `.env`
 
 ```ini
-DB_HOST=localhost
+DB_HOST=db
 DB_PORT=5432
 DB_NAME=controle_estoque
-DB_USER=postgres
-DB_PASS=postgres
+DB_USER=usuario
+DB_PASS=sua_senha_aqui
+VITE_API_URL=https://seu-dominio.com.br/api
 ```
 
-### 4. Suba os arquivos para produção com:
+### 3. Suba os containers:
 
 ```bash
-./deploy.sh
+docker-compose up -d --build
+```
+
+### 4. Gere o certificado SSL:
+
+```bash
+docker run --rm -v $(pwd)/certbot/letsencrypt:/etc/letsencrypt   -v $(pwd)/certbot/certbot:/var/www/certbot   certbot/certbot certonly   --webroot --webroot-path=/var/www/certbot   --email seu@email.com --agree-tos --no-eff-email   -d seu-dominio.com.br
+```
+
+### 5. Reinicie o NGINX:
+
+```bash
+docker restart nginx-estoque
 ```
 
 ---
 
-## 🔐 Autenticação
-
-O login é feito via endpoint:
+## 🔐 Login (Autenticação JWT)
 
 ```http
-POST /backend/api/auth/index.php
-Content-Type: application/json
+POST /api/usuarios/
 ```
 
 ### Corpo da requisição:
 
 ```json
 {
-  "email": "admin@teste.com",
-  "senha": "sua_senha"
+  "user": "usuario",
+  "password": "123456"
 }
 ```
 
-### Resposta (200 OK):
+### Resposta esperada:
 
 ```json
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOi...",
+  "status": "success"
 }
 ```
 
 ---
 
-## 🚀 Frontend (em breve)
+## 🚀 Acessar o Sistema
 
-Em breve será iniciado o painel administrativo com:
-
-- Tela de login  
-- Dashboard resumido  
-- CRUD de produtos  
-- Visualização de vendas  
-- Relatórios de lucros
+- **Produção (SSL)**: https://seu-dominio.com.br  
+- **Localmente**: http://localhost:5173
 
 ---
 
-## 🤖 Futuro: Integração com IA e WhatsApp
+## 🤖 Futuro: IA + WhatsApp
 
-- Conexão com IA via LLaMA, Ollama ou OpenAI  
-- Interface via WhatsApp para comandos de estoque  
-- Relatórios e alertas automáticos por conversa
+- IA que entende perguntas sobre o estoque  
+- Conexão com WhatsApp para comandos por chat  
+- IA respondendo comandos por voz/texto
 
 ---
 
-Feito com ❤️ por [ArthurCostaDias e Gustavo Haracemiw] – v1.0
+Feito com ❤️ por uma equipe dedicada  
+⬆️ `v1.1` – com SSL, login JWT e painel em React
