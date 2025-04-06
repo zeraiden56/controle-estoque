@@ -5,20 +5,19 @@
 
 # 📦 Controle de Estoque
 
-Sistema de controle de estoque com backend em PHP (API REST), banco de dados PostgreSQL, frontend em React e deploy com Docker + NGINX com proxy reverso. Agora com SSL habilitado!
+Sistema de controle de estoque inicialmente desenvolvido com backend em PHP puro (API REST) que está sendo migrado para Laravel, com banco de dados PostgreSQL, frontend em React e deploy com Docker + NGINX com proxy reverso e SSL habilitado (Let's Encrypt).
 
 ---
 
 ## 📋 Progresso do Projeto
 
-### 📦 1. Backend (PHP + API REST)
+### 📦 1. Backend (Migração para Laravel)
 
-✅ API REST com `index.php` centralizando tudo  
-✅ Autenticação via JWT  
-✅ Validação de dados  
-✅ Organização modular (`produtos`, `vendas`, `usuarios`)  
-✅ Criação de usuários e login com JWT  
-⬜ Relacionamento entre vendas e produtos  
+✅ API REST original com `index.php` (PHP puro)  
+✅ Autenticação JWT original (PHP puro)  
+🟡 Migração inicial para Laravel (estrutura, migrations, models, controllers)  
+⬜ Migração completa das funcionalidades para Laravel  
+⬜ Integração com notificações WhatsApp (Laravel + Twilio)  
 
 ### 🔤 2. Frontend (React + Vite + Tailwind)
 
@@ -27,12 +26,13 @@ Sistema de controle de estoque com backend em PHP (API REST), banco de dados Pos
 ✅ CRUD de produtos  
 🟡 CRUD de vendas  
 ⬜ Tela de relatórios/lucros  
+⬜ Adaptação para consumir API Laravel (planejado)
 
 ### 🌐 3. Infraestrutura e Deploy
 
 ✅ Docker Compose com múltiplos serviços  
 ✅ Proxy reverso com NGINX + Certbot  
-✅ SSL com Let's Encrypt para  
+✅ SSL com Let's Encrypt  
 ⬜ Deploy automático via CI/CD (planejado)
 
 ### 🤖 4. Integração com IA e WhatsApp (em breve)
@@ -45,120 +45,76 @@ Sistema de controle de estoque com backend em PHP (API REST), banco de dados Pos
 
 ## 🧱 Tecnologias Utilizadas
 
-| **Camada**         | **Tecnologia**                          |
-| ------------------ | --------------------------------------- |
-| **Backend**        | 🐘 PHP 8.3 + API REST                    |
-| **Banco de Dados** | 🐘 PostgreSQL 15 + 🔐 pgcrypto            |
-| **Frontend**       | ⚛️ React + ⚡ Vite + 🎨 TailwindCSS        |
-| **Autenticação**   | 🔑 JWT (via Firebase) + 🔐 `crypt()`      |
-| **Infra**          | 🐳 Docker, 🌐 NGINX, 🔒 Certbot            |
-| **Hospedagem**     | 🖥️ VPS com domínio + SSL (Let's Encrypt) |
+| **Camada**         | **Tecnologia**                                    |
+|--------------------|---------------------------------------------------|
+| **Backend**        | 🐘 Laravel 11 (migrando de PHP puro)              |
+| **Banco de Dados** | 🐘 PostgreSQL 15 + 🔐 pgcrypto                    |
+| **Frontend**       | ⚛️ React + ⚡ Vite + 🎨 TailwindCSS                 |
+| **Autenticação**   | 🔑 JWT (Laravel Sanctum/JWT-Auth)                 |
+| **Infraestrutura** | 🐳 Docker, 🌐 NGINX, 🔒 Certbot                    |
+| **Hospedagem**     | 🖥️ VPS com domínio + SSL (Let's Encrypt)          |
 
 ---
 
-## 📁 Estrutura de Pastas
+## 🚀 Explicação da Migração para Laravel
 
-```bash
-controle-estoque/
-├── backend/
-│   ├── api/
-│   │   ├── auth/
-│   │   ├── produtos/
-│   │   ├── usuarios/
-│   │   └── vendas/
-│   ├── config/
-│   ├── models/
-│   ├── utils/
-│   ├── .env
-│   └── index.php
-├── certbot/                         # Desafios SSL Let's Encrypt
-│   ├── certbot/
-│   └── letsencrypt/
-├── frontend/
-│   ├── public/
-│   ├── src/
-│   └── dist/                        # build de produção
-├── nginx/default.conf               # Proxy reverso + SSL
-├── docker-compose.yml
-├── README.md
-└── .env.example
-```
-
----
-
-## ⚙️ Requisitos
-
-- PHP 8.1+
-- PostgreSQL 14+
-- Docker + Docker Compose
-- VPS com domínio configurado
-- Certbot instalado
-
-Banco:
-
-```sql
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
-```
+O projeto originalmente foi desenvolvido com PHP puro, usando PDO diretamente e JWT manual. Estamos migrando gradualmente para Laravel para maior segurança, manutenção facilitada, escalabilidade e integração rápida com outras ferramentas (WhatsApp, notificações, etc.). O frontend será adaptado após finalização da API Laravel.
 
 ---
 
 ## 🛠️ Instalação e Deploy
 
-### 1. Clone o repositório:
-
+### Clone o repositório
 ```bash
 git clone https://github.com/seu-usuario/controle-estoque.git
 cd controle-estoque
 ```
 
-### 2. Configure variáveis de ambiente `.env`
-
+### Configuração de variáveis `.env`
 ```ini
 DB_HOST=db
 DB_PORT=5432
-DB_NAME=controle_estoque
-DB_USER=usuario
-DB_PASS=sua_senha_aqui
-VITE_API_URL=https://seu-dominio.com.br/api
+DB_DATABASE=controle_estoque
+DB_USERNAME=usuario
+DB_PASSWORD=sua_senha
 ```
 
-### 3. Suba os containers:
-
+### Suba os containers com Docker Compose
 ```bash
 docker-compose up -d --build
 ```
 
-### 4. Gere o certificado SSL:
-
+### Gere o certificado SSL
 ```bash
-docker run --rm -v $(pwd)/certbot/letsencrypt:/etc/letsencrypt   -v $(pwd)/certbot/certbot:/var/www/certbot   certbot/certbot certonly   --webroot --webroot-path=/var/www/certbot   --email seu@email.com --agree-tos --no-eff-email   -d seu-dominio.com.br
+docker run --rm -v $(pwd)/certbot/letsencrypt:/etc/letsencrypt \
+  -v $(pwd)/certbot/certbot:/var/www/certbot \
+  certbot/certbot certonly --webroot \
+  --webroot-path=/var/www/certbot --email seu@email.com \
+  --agree-tos --no-eff-email -d seu-dominio.com.br
 ```
 
-### 5. Reinicie o NGINX:
-
+### Reinicie o NGINX
 ```bash
 docker restart nginx-estoque
 ```
 
 ---
 
-## 🔐 Login (Autenticação JWT)
+## 🔐 Login JWT
 
+**Request:**
 ```http
-POST /api/usuarios/
+POST /api/login
 ```
-
-### Corpo da requisição:
 
 ```json
 {
-  "user": "usuario",
-  "password": "123456"
+  "email": "usuario@email.com",
+  "password": "sua_senha"
 }
 ```
 
-### Resposta esperada:
-
+**Resposta:**
 ```json
 {
   "token": "eyJ0eXAiOiJKV1QiLCJhbGciOi...",
@@ -168,20 +124,13 @@ POST /api/usuarios/
 
 ---
 
-## 🚀 Acessar o Sistema
-
-- **Produção (SSL)**: https://seu-dominio.com.br  
-- **Localmente**: http://localhost:5173
-
----
-
-## 🤖 Futuro: IA + WhatsApp
-
-- IA que entende perguntas sobre o estoque  
-- Conexão com WhatsApp para comandos por chat  
-- IA respondendo comandos por voz/texto
+## 📌 Próximos passos
+- Finalizar migração backend para Laravel
+- Ajustar frontend React para consumir Laravel
+- Integração com WhatsApp e IA
 
 ---
 
-Feito com ❤️ por uma equipe dedicada  
-⬆️ `v1.1` – com SSL, login JWT e painel em React
+Feito com ❤️ por uma equipe dedicada
+
+⬆️ `v2.0` – Migração para Laravel iniciada.
