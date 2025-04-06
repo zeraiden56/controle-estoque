@@ -43,6 +43,30 @@ Sistema de controle de estoque inicialmente desenvolvido com backend em PHP puro
 
 ---
 
+## 🎯 Funcionalidades Planejadas
+
+- ✔️ Sistema simples, rápido (3 cliques para informação)
+- ✔️ Controle de estoque com ingredientes
+- ✔️ Controle de entrada e saída (lançamento de produção consome estoque)
+- ✔️ Notificação via WhatsApp para Aline e Gerente (estoque mínimo)
+- ✔️ Lista de compras automática com base em estoque crítico
+- ✔️ Tela para lançamento de produção
+- ✔️ Lançamentos separados para controle da Aline
+- ✔️ Tabela de preços (com comparação com valores antigos)
+- ✔️ Sistema de desperdício/quebra (peso do que foi descartado)
+- ✔️ Checklist com calendário (limpeza diária, semanal, aniversários)
+- ✔️ Hierarquia de usuários e permissões (cozinha, subgerente, atendimento)
+- ✔️ Sistema de lembretes diários para o gerente (com envio via WhatsApp)
+- ✔️ Calendário exclusivo para Aline lançar compromissos e tarefas
+- ✔️ RH básico com exportação para contabilidade (.csv ou texto padronizado)
+  - Faltas, atestados, demissões, admissões
+  - Hora extra, adicional noturno
+  - Pagamento semanal
+  - Relatório de RH
+- 🔒 Números de WhatsApp fixos (Aline e funcionários)
+
+---
+
 ## 🧱 Tecnologias Utilizadas
 
 | **Camada**         | **Tecnologia**                                    |
@@ -127,6 +151,7 @@ POST /api/login
 ## 📌 Próximos passos
 - Finalizar migração backend para Laravel
 - Ajustar frontend React para consumir Laravel
+- Implementar sistema de RH, calendário e checklist
 - Integração com WhatsApp e IA
 
 ---
